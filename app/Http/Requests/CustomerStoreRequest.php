@@ -24,7 +24,7 @@ class CustomerStoreRequest extends FormRequest
         return [
             'name' => 'required',
             'contact' => 'required|integer|unique:customers,contact',
-            'email' => 'required|unique:customers,email',
+            'email' => 'unique:customers,email',
         ];
     }
 }

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('gst_number')->nullable();
             $table->text('address')->nullable();
+            $table->text('adhar')->nullable();
+            $table->text('pan')->nullable();
             $table->timestamps();
         });
     }

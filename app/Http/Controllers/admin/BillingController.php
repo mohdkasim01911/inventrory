@@ -44,7 +44,7 @@ class BillingController extends Controller
      */
     public function create()
     {
-        $customers = Customer::all();
+       $customers = Customer::select('id','name')->get();
         $products = Product::all();
         return view('admin.billing.create', compact('customers','products'));
     }
@@ -79,17 +79,33 @@ class BillingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Billing $billing)
     {
-        //
+
+         $billing = $billing->load('items.product','items.serials');
+         $customers = Customer::select('id','name')->get();
+         $products = Product::all();
+         return view('admin.billing.edit', compact('billing','customers','products'));
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Billing $billing)
     {
-        //
+
+         DB::beginTransaction();
+        try {
+            $dto = BillingDTO::fromRequest($request);
+            $invoice =  $this->billingService->update($dto, $billing);
+            return redirect()->route('billings.show', $invoice->id);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+        }
+        
     }
 
     /**

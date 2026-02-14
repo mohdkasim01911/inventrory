@@ -31,7 +31,7 @@
                              <td>{{ $i++ }}</td>
                              <td>{{ ucfirst($customer->name) }}</td>
                              <td>{{ $customer->contact }}</td>
-                             <td>{{ $customer->email }}</td>
+                             <td>{{ $customer->email ?? 'NA' }}</td>
                              <td class="text-center">
                                 <a href="{{ route('customers.edit',$customer->id) }}" class="btn btn-warning btn-sm"><i class="mdi mdi-pencil-box-outline"></i></a>
                                 

@@ -78,7 +78,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {  
         $perPage = $request->input('per_page', 10);
-        $customers = Customer::paginate($perPage)->appends(['per_page' => $perPage]);
+        $customers = Customer::latest()->paginate($perPage)->appends(['per_page' => $perPage]);
         // For serial numbering with pagination
         $startingNumber = ($customers->currentPage() - 1) * $customers->perPage() + 1;
         return view('admin.customers.index', compact('customers','startingNumber', 'perPage'));

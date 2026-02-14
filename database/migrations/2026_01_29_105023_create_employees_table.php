@@ -16,9 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('email')->unique();
-            $table->bigInteger('phone')->unique()
+            $table->bigInteger('phone')->unique();
             $table->text('address')->nullable();
             $table->decimal('salary',10,2);
+            $table->string('pan')->nullable();
+            $table->string('adhar')->nullable();
             $table->timestamps();
         });
     }

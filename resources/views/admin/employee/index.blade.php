@@ -16,6 +16,8 @@
             <th> Email </th>
             <th> Phone </th>
             <th> Salary </th>
+            <th> Due Amount </th>
+            <th> Pay Amount </th>
             <th> Action </th>
             </tr>
         </thead>
@@ -29,9 +31,13 @@
                     {{$i++}}
                 </td>
                 <td>{{ ucfirst($item->name) }}</td>
-                <td>{{$item->email}}</td>
+                <td>{{$item->email ?? 'N/A'}}</td>
                 <td>{{$item->phone}}</td>
                 <td>{{$item->salary}}</td>
+                <td class="{{ ($item->salary - $item->current_month_amount) < 0 ? 'text-danger' : 'text-success' }} fw-bold">
+                    {{ $item->salary - $item->current_month_amount }}
+                </td>
+                <td>{{$item->current_month_amount ?? '0.00' }}</td>
                   <td class="text-center">
                         <a href="{{ route('employees.edit',$item->id) }}"
                         class="btn btn-sm btn-warning me-1"

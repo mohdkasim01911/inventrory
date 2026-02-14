@@ -33,7 +33,6 @@ class CustomerupdateRequest extends FormRequest
             ],
 
             'email' => [
-                'required',
                 'email',
                 Rule::unique('customers', 'email')
                     ->ignore($this->route('customer')),

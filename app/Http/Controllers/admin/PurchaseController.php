@@ -4,7 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Purchase,Product,Vendor,PurchaseItem};
+use App\Models\{Purchase,Product,Vendor,PurchaseItem,PurchaseSerial};
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Requests\PurchaseStoreRequest;
@@ -52,6 +52,8 @@ class PurchaseController extends Controller
      */
     public function store(PurchaseStoreRequest $request)
     {
+
+    
         DB::transaction(function() use ($request){
 
         $purchase = Purchase::create([
@@ -65,7 +67,7 @@ class PurchaseController extends Controller
 
         foreach($request->product_id as $i=>$pid){
 
-            PurchaseItem::create([
+        PurchaseItem::create([
                 'purchase_id'=>$purchase->id,
                 'product_id'=>$pid,
                 'quantity'=>$request->qty[$i],
@@ -75,11 +77,23 @@ class PurchaseController extends Controller
                 'total'=>$request->total[$i],
             ]);
 
+            if (!empty($request->serial_numbers[$i])) {
+
+                foreach ($request->serial_numbers[$i] as $serial) {
+
+                    PurchaseSerial::create([
+                        'purchase_id' => $purchase->id,
+                        'product_id'  => $pid,
+                        'serial_number'   => $serial,
+                        'status'      => 1, // Available
+                    ]);
+                }
+            }
             // 🔥 STOCK INCREASE
             Product::where('id',$pid)
                 ->increment('stock',$request->qty[$i]);
-                }
-            });
+            }
+        });
 
         return redirect('/purchases')->with('success','Purchase Added');
     }
@@ -99,7 +113,15 @@ class PurchaseController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $purchase = Purchase::with([
+            'items',
+            'serials'   // relation honi chahiye
+        ])->findOrFail($id);
+
+        $vendors  = Vendor::all();
+        $products = Product::all();
+
+        return view('admin.purchases.edit',compact('purchase','vendors','products'));
     }
 
     /**
@@ -107,7 +129,74 @@ class PurchaseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        
+           DB::transaction(function () use ($request, $id) {
+
+                $purchase = Purchase::with(['items', 'serials'])->findOrFail($id);
+
+                /**
+                 * 🔥 STEP 1: OLD STOCK REVERSE
+                 */
+                foreach ($purchase->items as $item) {
+                    Product::where('id', $item->product_id)
+                        ->decrement('stock', $item->quantity);
+                }
+
+                /**
+                 * 🔥 STEP 2: DELETE OLD ITEMS & SERIALS
+                 */
+                $purchase->items()->delete();
+                $purchase->serials()->delete();
+
+                /**
+                 * 🔥 STEP 3: UPDATE PURCHASE MASTER
+                 */
+                $purchase->update([
+                    'vendor_id'    => $request->vendor_id,
+                    'invoice_no'   => $request->invoice_no,
+                    'invoice_date' => $request->invoice_date,
+                    'subtotal'     => $request->subtotal,
+                    'gst_amount'   => $request->gst_amount,
+                    'total_amount' => $request->grand_total,
+                ]);
+
+                /**
+                 * 🔥 STEP 4: INSERT NEW ITEMS + SERIALS + STOCK
+                 */
+                foreach ($request->product_id as $i => $pid) {
+
+                    PurchaseItem::create([
+                        'purchase_id' => $purchase->id,
+                        'product_id'  => $pid,
+                        'quantity'    => $request->qty[$i],
+                        'price'       => $request->price[$i],
+                        'gst_percent' => $request->gst[$i],
+                        'gst_amount'  => $request->gst_amt[$i],
+                        'total'       => $request->total[$i],
+                    ]);
+
+                    // SERIAL NUMBERS
+                    if (!empty($request->serial_numbers[$i])) {
+                        foreach ($request->serial_numbers[$i] as $serial) {
+
+                            PurchaseSerial::create([
+                                'purchase_id'   => $purchase->id,
+                                'product_id'    => $pid,
+                                'serial_number' => $serial,
+                                'status'        => 1, // Available
+                            ]);
+                        }
+                    }
+
+                    // 🔥 STOCK INCREASE
+                    Product::where('id', $pid)
+                        ->increment('stock', $request->qty[$i]);
+                }
+            });
+
+          return redirect()->route('purchases.show',$id)->with('success','Purchase Updated');
+  
+
     }
 
     /**

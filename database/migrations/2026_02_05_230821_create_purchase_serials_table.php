@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emi_logs', function (Blueprint $table) {
+        Schema::create('purchase_serials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('emi_id')->constrained()->cascadeOnDelete();
-            $table->decimal('installment_amount',10,2);
-            $table->decimal('paid_amount',10,2);
-            $table->date('paid_date')->nullable();
-            $table->decimal('due_amount',10,2);
+            $table->foreignId('purchase_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('serial_number');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('emi_logs');
+        Schema::dropIfExists('purchase_serials');
     }
 };

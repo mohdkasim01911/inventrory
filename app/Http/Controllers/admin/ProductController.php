@@ -29,7 +29,7 @@ class ProductController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $products = Product::with('category')->paginate($perPage)->appends(['per_page' => $perPage]);
+        $products = Product::with('category')->latest()->paginate($perPage)->appends(['per_page' => $perPage]);
 
         // For serial numbering with pagination
         $startingNumber = ($products->currentPage() - 1) * $products->perPage() + 1;

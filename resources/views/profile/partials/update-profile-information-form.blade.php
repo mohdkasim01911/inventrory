@@ -25,7 +25,7 @@
 
                 {{-- Name --}}
                 <div class="form-group mb-3">
-                    <label for="name">Name</label>
+                    <label for="name">Firm Name</label>
                     <input
                         type="text"
                         name="name"

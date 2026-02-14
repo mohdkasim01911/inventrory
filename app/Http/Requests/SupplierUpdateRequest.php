@@ -34,7 +34,6 @@ class SupplierUpdateRequest extends FormRequest
                     ->ignore($this->route('supplier')), // <-- correct route param
             ],
             'gst_number' => 'required',
-            'address' => 'required',
         ];
     }
 

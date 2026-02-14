@@ -23,9 +23,8 @@ class SupplierRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'phone' => 'required|integer|unique:vendors,phone',
+            'phone' => 'required|numeric|unique:vendors,phone',
             'gst_number' => 'required',
-            'address' => 'required',
         ];
     }
 }

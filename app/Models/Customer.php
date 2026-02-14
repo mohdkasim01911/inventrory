@@ -6,7 +6,7 @@ use App\Models\BaseModel;
 
 class Customer extends BaseModel
 {
-    protected $fillable = ['user_id','name', 'contact', 'email'];
+    protected $fillable = ['user_id','name', 'contact', 'email','pan','adhar'];
 
     public function udhars()
     {

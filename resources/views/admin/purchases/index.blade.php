@@ -37,6 +37,7 @@
                             <td>&#8377; {{ number_format($item->total_amount,2) }}</td>
                             <td>
                                 <a href="{{route('purchases.show',$item->id)}}" class="btn btn-sm btn-warning"><i class="mdi mdi-eye"></i></a>
+                                <a href="{{ route('purchases.edit', $item->id) }}" class="btn btn-warning btn-sm"><i class="mdi mdi-pencil-box-outline"></i></a>
                                 <a href="{{url('/purchases/'.$item->id.'/download')}}" class="btn btn-sm btn-success"><i class="mdi mdi-download"></i></a>
                             </td>
                         </tr>

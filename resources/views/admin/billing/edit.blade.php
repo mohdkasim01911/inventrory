@@ -14,13 +14,15 @@
 
 
 
-            <h4 class="card-title">Add Bill</h4>
+            <h4 class="card-title">Edit Bill #{{ $billing->id }}</h4>
 
 
 
-            <form action="{{ route('billings.store') }}" method="POST">
+            <form action="{{ route('billings.update', $billing->id) }}" method="POST">
 
                 @csrf
+
+                @method('PUT')
 
 
 
@@ -34,11 +36,15 @@
 
                         <select name="customer_id" class="form-control" required>
 
-                            <option value="">Select</option>
-
                             @foreach($customers as $customer)
 
-                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                <option value="{{ $customer->id }}"
+
+                                    {{ $billing->customer_id == $customer->id ? 'selected' : '' }}>
+
+                                    {{ $customer->name }}
+
+                                </option>
 
                             @endforeach
 
@@ -46,23 +52,19 @@
 
                     </div>
 
-
-
                     <div class="form-group col-md-6">
 
                         <label>Date</label>
 
-                        <input type="date" name="date" class="form-control" id="date">
+                        <input type="date" name="date" class="form-control" id="date" value="{{$billing->date}}">
 
                     </div>
 
-                        
-
-                    </div>
+                </div>
 
 
 
-                {{-- Products Table --}}
+                {{-- Products --}}
 
                 <div class="table-responsive">
 
@@ -94,133 +96,141 @@
 
 
 
-                            {{-- FIRST ROW --}}
+                        @foreach($billing->items as $i => $item)
 
-                            <tr>
+                        <tr>
 
-                                <td>
+                            <td>
 
-                                    <select name="products[0][product_id]" class="form-control" required>
+                                <select name="products[{{ $i }}][product_id]" class="form-control" required>
 
-                                        <option value="">Select</option>
+                                    @foreach($products as $product)
 
-                                        @foreach($products as $product)
+                                        <option value="{{ $product->id }}"
 
-                                            <option value="{{ $product->id }}">
+                                            {{ $item->product_id == $product->id ? 'selected' : '' }}>
 
-                                                {{ $product->name }} (Stock: {{ $product->stock }})
+                                            {{ $product->name }}
 
-                                            </option>
+                                        </option>
 
-                                        @endforeach
+                                    @endforeach
 
-                                    </select>
+                                </select>
 
-                                </td>
-
-
-
-                                <td>
-
-                                    <input type="number" name="products[0][quantity]"
-
-                                           class="form-control" min="1" value="1" style="width: 100px;">
-
-                                </td>
+                            </td>
 
 
 
-                                <td>
+                            <td>
 
-                                    <input type="number" name="products[0][amount]"
+                                <input type="number"
 
-                                           class="form-control" min="1" value="1" step="any">
+                                       name="products[{{ $i }}][quantity]"
 
-                                </td>
+                                       class="form-control"
 
+                                       value="{{ $item->quantity }}">
 
-
-                                <td>
-
-                                    <select name="products[0][gst]" class="form-control">
-
-                                        <option value="0">0%</option>
-
-                                        <option value="5">5%</option>
-
-                                        <option value="12">12%</option>
-
-                                        <option value="18" selected>18%</option>
-
-                                        <option value="28">28%</option>
-
-                                    </select>
-
-                                </td>
+                            </td>
 
 
 
-                                {{-- SERIAL COLUMN --}}
+                            <td>
 
-                                <td>
+                                <input type="number"
 
-                                    <div class="serial-wrapper"
+                                       name="products[{{ $i }}][amount]"
 
-                                         data-name="products[0][serials][]">
+                                       class="form-control"
+
+                                       value="{{ $item->price }}" step="any">
+
+                            </td>
 
 
+
+                            <td>
+
+                                <select name="products[{{ $i }}][gst]" class="form-control">
+
+                                    @foreach([0,5,12,18,28] as $gst)
+
+                                        <option value="{{ $gst }}"
+
+                                            {{ $item->gst_percent == $gst ? 'selected' : '' }}>
+
+                                            {{ $gst }}%
+
+                                        </option>
+
+                                    @endforeach
+
+                                </select>
+
+                            </td>
+
+
+
+                            {{-- SERIALS --}}
+
+                            <td>
+
+                                <div class="serial-wrapper"
+
+                                     data-name="products[{{ $i }}][serials][]">
+
+
+
+                                    @foreach($item->serials as $serial)
 
                                         <div class="d-flex mb-1">
 
                                             <input type="text"
 
-                                                   name="products[0][serials][]"
+                                                   name="products[{{ $i }}][serials][]"
 
                                                    class="form-control"
 
-                                                   placeholder="Serial No">
+                                                   value="{{ $serial->serial_number }}">
 
                                             <button type="button"
 
-                                                    class="btn btn-sm btn-danger ml-1 remove-serial">
-
-                                                ×
-
-                                            </button>
+                                                    class="btn btn-sm btn-danger ml-1 remove-serial">×</button>
 
                                         </div>
 
+                                    @endforeach
 
-
-                                    </div>
-
-
-
-                                    <button type="button"
-
-                                            class="btn btn-sm btn-primary add-serial mt-1">
-
-                                        + Add Serial
-
-                                    </button>
-
-                                </td>
+                                </div>
 
 
 
-                                <td>
+                                <button type="button"
 
-                                    <button type="button"
+                                        class="btn btn-sm btn-primary add-serial mt-1">
 
-                                            class="btn btn-danger removeRow">
+                                    + Add Serial
 
-                                        Remove
+                                </button>
 
-                                    </button>
+                            </td>
 
-                                </td>
 
-                            </tr>
+
+                            <td>
+
+                                <button type="button" class="btn btn-danger removeRow">
+
+                                    Remove
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        @endforeach
 
 
 
@@ -236,7 +246,7 @@
 
 
 
-                {{-- Other Fields --}}
+                {{-- OTHER FIELDS --}}
 
                 <div class="row">
 
@@ -244,7 +254,11 @@
 
                         <label>Discount</label>
 
-                        <input type="number" name="discount" class="form-control" placeholder="Discount" value="0">
+                        <input type="number" name="discount"
+
+                               value="{{ $billing->discount }}"
+
+                               class="form-control">
 
                     </div>
 
@@ -254,7 +268,11 @@
 
                         <label>Cash</label>
 
-                        <input type="number" name="cash" class="form-control" placeholder="Cash" value="0">
+                        <input type="number" name="cash"
+
+                               value="{{ $billing->cash }}"
+
+                               class="form-control">
 
                     </div>
 
@@ -264,7 +282,11 @@
 
                         <label>Details</label>
 
-                        <input type="text" name="details" class="form-control" placeholder="Details">
+                        <input type="text" name="details"
+
+                               value="{{ $billing->details }}"
+
+                               class="form-control">
 
                     </div>
 
@@ -278,15 +300,13 @@
 
                 <button type="submit" class="btn btn-success">
 
-                    Create Invoice
+                    Update Invoice
 
                 </button>
 
 
 
-                <button type="button"
-
-                        id="addRow"
+                <button type="button" id="addRow"
 
                         class="btn btn-secondary float-right">
 
@@ -308,11 +328,13 @@
 
 
 
+
+
 {{-- ================= JAVASCRIPT ================= --}}
 
 <script>
 
-let index = 1;
+let index = {{ count($billing->items) }};
 
 
 
@@ -336,7 +358,7 @@ document.getElementById('addRow').addEventListener('click', function () {
 
                     <option value="{{ $product->id }}">
 
-                        {{ $product->name }} (Stock: {{ $product->stock }})
+                        {{ $product->name }}
 
                     </option>
 
@@ -350,11 +372,9 @@ document.getElementById('addRow').addEventListener('click', function () {
 
         <td>
 
-            <input type="number"
+            <input type="number" name="products[${index}][quantity]"
 
-                   name="products[${index}][quantity]"
-
-                   class="form-control" min="1" value="1">
+                   class="form-control" value="1">
 
         </td>
 
@@ -362,11 +382,9 @@ document.getElementById('addRow').addEventListener('click', function () {
 
         <td>
 
-            <input type="number"
+            <input type="number" name="products[${index}][amount]"
 
-                   name="products[${index}][amount]"
-
-                   class="form-control" min="1" value="1" step="any">
+                   class="form-control" value="1" step="any">
 
         </td>
 
@@ -456,11 +474,9 @@ document.addEventListener('click', function (e) {
 
 
 
-// ADD SERIAL FIELD
+// ADD SERIAL
 
 document.addEventListener('click', function (e) {
-
-
 
     if (e.target.classList.contains('add-serial')) {
 
@@ -484,7 +500,7 @@ document.addEventListener('click', function (e) {
 
                        class="form-control"
 
-                       placeholder="Serial No" >
+                       placeholder="Serial No">
 
                 <button type="button"
 
@@ -502,7 +518,7 @@ document.addEventListener('click', function (e) {
 
 
 
-    // REMOVE SERIAL FIELD
+    // REMOVE SERIAL
 
     if (e.target.classList.contains('remove-serial')) {
 
@@ -517,4 +533,10 @@ document.addEventListener('click', function (e) {
 
 
 @endsection
+
+
+
+
+
+
 

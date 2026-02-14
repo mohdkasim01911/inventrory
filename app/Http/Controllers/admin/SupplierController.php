@@ -30,7 +30,7 @@ class SupplierController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $suppliers = Vendor::paginate($perPage)->appends(['per_page' => $perPage]);
+        $suppliers = Vendor::latest()->paginate($perPage)->appends(['per_page' => $perPage]);
 
         // For serial numbering with pagination
         $startingNumber = ($suppliers->currentPage() - 1) * $suppliers->perPage() + 1;
@@ -52,6 +52,7 @@ class SupplierController extends Controller
     {
 
         $dto = SupplierDTO::fromRequest($request);
+
         $this->supplierService->store($dto);
 
         

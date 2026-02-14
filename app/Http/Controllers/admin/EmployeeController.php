@@ -25,7 +25,12 @@ class EmployeeController extends Controller
 
         $perPage = $request->input('per_page', 10);
 
-        $employees = Employee::paginate($perPage)->appends(['per_page' => $perPage]);
+        // $employees = Employee::paginate($perPage)->appends(['per_page' => $perPage]);
+
+        $employees = Employee::withSum(['monthAmounts as current_month_amount' => function ($q) {
+            $q->whereMonth('created_at', now()->month)
+              ->whereYear('created_at', now()->year);
+        }],'amount')->paginate($perPage)->appends(['per_page' => $perPage]);
 
         // For serial numbering with pagination
         $startingNumber = ($employees->currentPage() - 1) * $employees->perPage() + 1;
@@ -46,15 +51,13 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-
+       
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:employees,email',
+            'email' => 'nullable|unique:employees,email',
             'phone' => 'required|numeric',
             'salary' => 'required',
-            'name' => 'required|string',
         ]);
-
         Employee::create($request->all());
         return redirect()->route('employees.index')->with('success','Employe created');
     }
@@ -89,10 +92,9 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:employees,email,' . $employee->id,
+            'email' => 'nullable|email|unique:employees,email,' . $employee->id,
             'phone' => 'required|numeric',
             'salary' => 'required',
-            'name' => 'required|string',
         ]);
 
         $employee->update($request->all());
@@ -123,7 +125,7 @@ class EmployeeController extends Controller
             'details' => 'required',
             'amount' => 'required|numeric',
         ]);
-
+        
         EmployeeMonthAmount::create($request->all());
         return redirect()->route('employees.show',$request->employee_id)->with('success','Employee expensses added');
     }

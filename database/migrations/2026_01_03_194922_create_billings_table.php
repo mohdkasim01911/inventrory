@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('subtotal', 10, 2);
             $table->decimal('cash', 10, 2);
             $table->string('details')->nullable();
+            $table->date('date')->nullable();
             $table->decimal('gst_amount', 10, 2);
             $table->timestamps();
         });

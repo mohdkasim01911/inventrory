@@ -13,6 +13,13 @@ class Employee extends BaseModel
         'phone',
         'address',
         'salary',
+        'pan',
+        'adhar',
     ];
+
+    public function monthAmounts()
+    {
+        return $this->hasMany(EmployeeMonthAmount::class, 'employee_id');
+    }
 
 }

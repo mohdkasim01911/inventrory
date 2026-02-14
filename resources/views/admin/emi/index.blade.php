@@ -19,6 +19,7 @@
                             <th>Total Amount</th>
                             <th>Paid Amount</th>
                             <th>Due Amount</th>
+                            <th>Last Paid Date</th>
                             <th>Next Due Date</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -35,6 +36,7 @@
                                 <td>{{ $emi->total_amount }}</td>
                                 <td>{{ $emi->paid_amount }}</td>
                                 <td>{{ $emi->due_amount }}</td>
+                                <td>{{ $emi->paid_date }}</td>
                                 <td>{{ $emi->next_due_date }}</td>
                                 <td>{{ $emi->status }}</td>
                                 <td>

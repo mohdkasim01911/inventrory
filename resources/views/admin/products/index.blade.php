@@ -16,9 +16,10 @@
                         <tr>
                             <th>#</th> {{-- Serial number --}}
                             <th>ID</th>
-                            <th>Serial Number</th>
                             <th>Name</th>
                             <th>Category</th>
+                            <th>Ampere</th>
+                            <th>Date</th>
                             <th>Price</th>
                             <th>Stock</th>
                             <th>Action</th>
@@ -32,11 +33,12 @@
                         <tr>
                             <td>{{ $number++ }}</td>
                             <td>{{ $product->id }}</td>
-                            <td>{{ $product->serial_number }}</td>
                             <td>{{ucfirst($product->name)}}</td>
                             <td>{{ ucfirst($product->category->name)}}</td>
-                            <td>{{ $product->price }}</td>
-                            <td>{{ $product->stock }}</td>
+                            <td>{{ $product->ampere ?? 'N/A' }}</td>
+                            <td>{{ $product->date ?? 'N/A' }}</td>
+                            <td>{{ $product->price ?? '0.00' }}</td>
+                            <td>{{ $product->stock ?? '0' }}</td>
                             <td>
                                 <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">
                                     <i class="mdi mdi-pencil-box-outline"></i>
@@ -59,12 +61,11 @@
                         @endforeach
                     </tbody>
                 </table>
-
-                {{-- Pagination links --}}
+            </div>
+            {{-- Pagination links --}}
                 <div class="mt-4">
                     {{ $products->links('vendor.pagination.custom-bootstrap') }}
                 </div>
-            </div>
         </div>
     </div>
 </div>

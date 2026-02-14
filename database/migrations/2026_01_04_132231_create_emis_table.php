@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('installment_amount', 10, 2);
             $table->decimal('paid_amount', 10, 2)->default(0);
             $table->decimal('due_amount', 10, 2);
+            $table->date('paid_date')->nullable();
             $table->date('next_due_date');
             $table->enum('status', ['pending','partially_paid','completed'])->default('pending');
             $table->timestamps();

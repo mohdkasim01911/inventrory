@@ -8,32 +8,44 @@
         <h4 class="card-title">Add Suppliers</h4>
         <form class="forms-sample" action="{{ route('suppliers.update',$supplier->id) }}" method="POST" >
             @csrf @method('put')
+
+        <div class="row">
            
-            <div class="form-group">
+            <div class="form-group col-md-6">
                 <label for="name">Name</label>
-                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Name" value="{{$supplier->name}}">  
+                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Name" value="{{old('name',$supplier->name)}}">  
                 @error('name') <div class="invalid-feedback">{{$message}}</div> @enderror 
             </div>
 
-            <div class="form-group ">
+            <div class="form-group col-md-6">
                 <label for="phone">Phone</label>
-                <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phone" placeholder="Phone" value="{{$supplier->phone}}">
+                <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" id="phone" placeholder="Phone" value="{{old('phone',$supplier->phone)}}">
                 @error('phone') <div class="invalid-feedback">{{$message}}</div> @enderror 
             </div>
 
-             <div class="form-group ">
+             <div class="form-group col-md-6">
                 <label for="gst_number">GST Number</label>
-                <input type="text" name="gst_number" class="form-control @error('gst_number') is-invalid @enderror" id="gst_number" placeholder="GST Number" value="{{$supplier->gst_number}}">
+                <input type="text" name="gst_number" class="form-control @error('gst_number') is-invalid @enderror" id="gst_number" placeholder="GST Number" value="{{old('gst_number',$supplier->gst_number)}}">
                @error('gst_number') <div class="invalid-feedback">{{$message}}</div> @enderror 
             </div>
 
-             <div class="form-group ">
+            <div class="form-group col-md-6">
+                <label for="adhar">Adhar Number</label>
+                <input type="text" name="adhar" class="form-control" placeholder="Adhar Number" value="{{old('adhar',$supplier->adhar)}}">
+            </div>
+
+            <div class="form-group col-md-6">
+                <label for="pan">PAN Number</label>
+                <input type="text" name="pan" class="form-control" id="pan" placeholder="PAN Number" value="{{old('pan',$supplier->pan)}}"> 
+            </div>
+
+             <div class="form-group col-md-6">
                 <label for="address">Address</label>
-                <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Address" value="{{$supplier->address}}">
+                <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" id="address" placeholder="Address" value="{{old('address',$supplier->address)}}">
                 @error('address') <div class="invalid-feedback">{{$message}}</div> @enderror 
             </div>
 
-           
+        </div>
 
             <button type="submit" class="btn btn-primary me-2">Submit</button>
             <a href="{{route('suppliers.index')}}" class="btn btn-light">Cancel</a>

@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->integer('ampere')->nullable();
+            $table->date('date')->nullable();
+            $table->integer('month')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('stock')->default(0);
-            $table->string('serial_number')->nullable();
+            // $table->string('serial_number')->nullable();
             $table->timestamps();
         });
     }

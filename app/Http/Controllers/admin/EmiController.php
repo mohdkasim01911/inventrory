@@ -92,12 +92,15 @@ class EmiController extends Controller
     public function update(Request $request, Emi $emi)
     {
 
+
         $request->validate([
             'amount' => 'required',
+            'paid_date' => 'required',
          ]);
 
         $emi->paid_amount += $request->amount;
         $emi->due_amount -= $request->amount;
+        $emi->paid_date = $request->paid_date;
 
         if ($emi->due_amount <= 0) {
             $emi->status = 'completed';
@@ -113,6 +116,7 @@ class EmiController extends Controller
             'emi_id' => $emi->id,
             'installment_amount' => $emi->installment_amount,
             'paid_amount' => $request->amount,
+            'paid_date' => $request->paid_date,
             'due_amount' => $emi->due_amount,
         ]);
 

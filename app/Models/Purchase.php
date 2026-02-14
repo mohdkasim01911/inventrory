@@ -18,4 +18,9 @@ class Purchase extends BaseModel
     public function vendor(){
         return $this->belongsTo(Vendor::class);
     }
+
+    public function serials()
+    {
+        return $this->hasMany(PurchaseSerial::class);
+    }
 }

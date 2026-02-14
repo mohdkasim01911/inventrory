@@ -11,5 +11,6 @@ class EmployeeMonthAmount extends BaseModel
         'employee_id',
         'amount',
         'details',
+        'date',
     ];
 }
