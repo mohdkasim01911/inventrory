@@ -18,6 +18,8 @@ return new class extends Migration
             $table->date('due_date');
             $table->enum('status', ['pending', 'paid', 'overdue'])->default('pending');
             $table->text('remarks')->nullable();
+            $table->decimal('pay_amount',10,2)->nullable();
+            $table->decimal('due_amount',10,2)->nullable();
             $table->timestamps();
         });
     }
